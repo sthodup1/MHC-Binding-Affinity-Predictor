@@ -1,9 +1,9 @@
 #!/bin/bash
-for ((a=1;a<=30;a++));
+for ((a=2;a<=10;a++));
 do
   cd /home/sthodup1/comp_bio/MHC-Binding-Affinity-Predictor/Data
-  rm -rf H-2-Db_truncated/
-  python blosum_encoding_truncated.py H-2-Db $a
+  rm -rf HLA-A-0201_truncated/
+  python blosum_encoding_truncated.py HLA-A-0201 $a
   cd /home/sthodup1/comp_bio/MHC-Binding-Affinity-Predictor
-  python YdiffCNN.py H-2-Db False $a
+  python YdiffCNN.py HLA-A-0201 False $a
 done

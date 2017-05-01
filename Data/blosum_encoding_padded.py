@@ -72,7 +72,9 @@ perm = np.random.permutation(len(data))
 
 
 
-Y = 1 - np.log(Y)/np.log(np.max(Y))
+# Y = 1 - np.log(Y)/np.log(np.max(Y))
+Y = 1 - np.log(Y)/np.log(50000)
+Y = np.maximum(0,Y)
 
 #Perform Separations and Scalings on Y
 Yout = np.zeros((np.shape(Y)[1],number_segments))
@@ -82,23 +84,6 @@ for i in range(np.shape(Y)[1]):
             out = np.zeros((1,number_segments))
             out[0][j-1] = 1
             Yout[i][:] = out
-
-#print Yout.shape
-
-# Yout2 = np.zeros((np.shape(Y)[1],3))
-
-# for i in range(np.shape(Y)[1]):
-#     if Y[0][i] <= 1/3:
-#         Yout2[i][:] = [1, 0, 0]
-#     elif Y[0][i] <= 2/3:
-#         Yout2[i][:] = [0, 1, 0]
-#     else:
-#         Yout2[i][:] = [0, 0, 1]
-
-# print "equal arrays"
-# print Yout2
-# print Yout
-# print np.array_equal(Yout,Yout2)
 
 train_length = int(0.8*len(perm))
 test_length = int((len(perm) - train_length)/2)
@@ -112,9 +97,6 @@ Ytest = Yout[perm[train_length+1:train_length+1+test_length],:]
 Xval = X[:,:,train_length+1+test_length+1:]
 Yval = Yout[train_length+1+test_length+1:len(perm),:]
 
-#print Ytrain.shape
-#print Ytest.shape
-#print Yval.shape
 
 
 os.system('mkdir '+hla_type+'_padded')

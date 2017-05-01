@@ -25,6 +25,9 @@ from scipy import interp
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import itertools
+import seaborn as sns
+sns.set(style='ticks', palette='Set2')
+sns.set_context("poster")
 
 np.random.seed(1337) # for reproducibility
 
@@ -32,7 +35,7 @@ hla_type = sys.argv[1]
 Padded = sys.argv[2]
 n_classes = int(sys.argv[3])
 
-
+plot_name = './DNN_plots/' 
 if Padded == 'True':
     X_train = np.load('Data/'+hla_type+'_padded/'+'Xtrain.npy')
     Y_train = np.load('Data/'+hla_type+'_padded/'+'Ytrain.npy')
@@ -42,6 +45,7 @@ if Padded == 'True':
     Y_valid = np.load('Data/'+hla_type+'_padded/'+'Yval.npy')
     core = 'Data/'+ hla_type+'_padded'
     fname = 'DNN_padded_segment_results.txt'
+    plot_name += 'padded/' + hla_type + '_'
 else:
     X_train = np.load('Data/'+hla_type+'_truncated/'+'Xtrain.npy')
     Y_train = np.load('Data/'+hla_type+'_truncated/'+'Ytrain.npy')
@@ -51,7 +55,9 @@ else:
     Y_valid = np.load('Data/'+hla_type+'_truncated/'+'Yval.npy')
     core = 'Data/'+ hla_type+'_truncated'
     fname = 'DNN_truncated_segment_results.txt'
+    plot_name += 'truncated/' + hla_type + '_'
 
+plot_name += str(n_classes) + '.png'
 
 
 
@@ -127,7 +133,7 @@ print('running at most 5 epochs')
 checkpointer = ModelCheckpoint(filepath=core+"/bestmodel.hdf5", verbose=1, save_best_only=True)
 earlystopper = EarlyStopping(monitor='val_loss', patience=30, verbose=1)
 
-model.fit(X_train_flat, Y_train, batch_size=100, epochs=100, callbacks=[checkpointer,earlystopper], validation_data=[X_valid_flat, Y_valid], shuffle=True)
+model.fit(X_train_flat, Y_train, batch_size=100, epochs=200, callbacks=[checkpointer,earlystopper], validation_data=[X_valid_flat, Y_valid], shuffle=True)
 
 tresults = model.evaluate(X_test_flat, Y_test)
 
@@ -147,12 +153,7 @@ def plot_confusion_matrix(cm, classes,
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
+
 
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
@@ -161,14 +162,21 @@ def plot_confusion_matrix(cm, classes,
         print('Confusion matrix, without normalization')
 
     print(cm)
+    ax = sns.heatmap(cm,vmin=0, vmax=1)
+    # plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    # plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
     thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, cm[i, j],
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
+    # for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    #     plt.text(j, i, cm[i, j],
+    #              horizontalalignment="center",
+    #              color="white" if cm[i, j] > thresh else "black")
 
-    plt.tight_layout()
+    # plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
@@ -180,7 +188,10 @@ np.set_printoptions(precision=2)
 
 # Plot normalized confusion matrix
 plt.figure()
+title = 'Normalized Confusion Matrix With ' + str(n_classes) + ' Classes'
 plot_confusion_matrix(cnf_matrix, classes=range(n_classes), normalize=True,
-                      title='Normalized confusion matrix')
+                      title=title)
 
-plt.show()
+# plt.show()
+plt.savefig(plot_name)
+
