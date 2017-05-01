@@ -93,19 +93,14 @@ model.add(Conv1D(activation="relu",
                         padding="valid",
                         strides=1))
 
+
 model.add(Dropout(0.3))
 
-model.add(Conv1D(activation="relu",
-                        input_shape=(peptide_length-kern_sC1+1, kern_sC1),
-                        filters=50,
-                        kernel_size=4,
-                        padding="valid",
-                        strides=1))
+model.add(MaxPooling1D(pool_size=peptide_length-kern_sC1+1, strides=None))
 
-model.add(Dropout(0.4))
 model.add(Flatten())
 
-model.add(Dense(units=peptide_length*10))
+model.add(Dense(units=filterC1))
 model.add(Activation('relu'))
 
 model.add(Dense(units=10))
@@ -123,7 +118,7 @@ print('running at most 500 epochs')
 checkpointer = ModelCheckpoint(filepath=core+"/bestmodelCNN.hdf5", verbose=1, save_best_only=True)
 earlystopper = EarlyStopping(monitor='val_loss', patience=30, verbose=1)
 
-model.fit(X_train, Y_train, batch_size=100, epochs=2, callbacks=[checkpointer,earlystopper], validation_data=[X_valid, Y_valid], shuffle=True)
+model.fit(X_train, Y_train, batch_size=100, epochs=200, callbacks=[checkpointer,earlystopper], validation_data=[X_valid, Y_valid], shuffle=True)
 
 tresults = model.evaluate(X_test, Y_test)
 
