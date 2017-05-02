@@ -1,1 +1,4 @@
 Data/H-2-Db_padded/bestmodelCNN.hdf5
+Data/HLA-A-0201_padded/
+Data/HLA-A-0201_truncated/
+.DS_Store

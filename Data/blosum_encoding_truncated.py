@@ -64,7 +64,9 @@ for i in range(len(data)):
 perm = np.random.permutation(len(data))
 
 
-Y = 1 - np.log(Y)/np.log(np.max(Y))
+# Y = 1 - np.log(Y)/np.log(np.max(Y))
+Y = 1 - np.log(Y)/np.log(50000)
+Y = np.maximum(0,Y)
 
 #Perform Separations and Scalings on Y
 Yout = np.zeros((np.shape(Y)[1],number_segments))

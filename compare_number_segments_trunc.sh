@@ -6,4 +6,5 @@ do
   python blosum_encoding_truncated.py HLA-A-0201 $a
   cd /home/sthodup1/comp_bio/MHC-Binding-Affinity-Predictor
   python YdiffCNN.py HLA-A-0201 False $a
+  python YdiffDNN.py HLA-A-0201 False $a
 done
