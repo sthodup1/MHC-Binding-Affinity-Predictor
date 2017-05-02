@@ -36,7 +36,7 @@ hla_type = sys.argv[1]
 Padded = sys.argv[2]
 n_classes = int(sys.argv[3])
 
-plot_name = './CNN_plots/' 
+plot_name = './CNN_unnormalized/' 
 if Padded == 'True':
     X_train = np.load('Data/'+hla_type+'_padded/'+'Xtrain.npy')
     Y_train = np.load('Data/'+hla_type+'_padded/'+'Ytrain.npy')
@@ -151,21 +151,21 @@ def plot_confusion_matrix(cm, classes,
         print('Confusion matrix, without normalization')
 
     print(cm)
-    ax = sns.heatmap(cm,vmin=0, vmax=1)
-    # plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    #ax = sns.heatmap(cm,vmin=0, vmax=1)
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
-    # plt.colorbar()
-    # tick_marks = np.arange(len(classes))
-    # plt.xticks(tick_marks, classes, rotation=45)
-    # plt.yticks(tick_marks, classes)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
     thresh = cm.max() / 2.
-    # for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-    #     plt.text(j, i, cm[i, j],
-    #              horizontalalignment="center",
-    #              color="white" if cm[i, j] > thresh else "black")
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
 
-    # plt.tight_layout()
+    plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
@@ -178,7 +178,7 @@ np.set_printoptions(precision=2)
 # Plot normalized confusion matrix
 plt.figure()
 title = 'Normalized Confusion Matrix With ' + str(n_classes) + ' Classes'
-plot_confusion_matrix(cnf_matrix, classes=range(n_classes), normalize=True,
+plot_confusion_matrix(cnf_matrix, classes=range(n_classes), normalize=False,
                       title=title)
 
 # plt.show()
